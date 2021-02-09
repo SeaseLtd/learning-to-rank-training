@@ -27,6 +27,12 @@ def hash_encoding(dataset, variable_to_encode):
     new_dataset = encoder.fit_transform(dataset)
     return new_dataset
 
+def one_hot(dataset, variable_to_encode):
+    # One Hot encoding
+    encoder = ce.OneHotEncoder(cols=[variable_to_encode])
+    new_dataset = encoder.fit_transform(dataset)
+    return new_dataset
+
 def doc2vec_encoding(dataset, variable_to_encode):
     # Doc2Vec encoding
     dataset[variable_to_encode] = dataset[variable_to_encode].map(lambda x: cleanData(x))
@@ -78,7 +84,8 @@ def preprocessing(output_dir, dataset_path, encoding):
     # Factorize URL
     ds['ID'] = pd.factorize(ds['URL'])[0]
     ds.drop(columns=['URL'], inplace=True)
-
+    print(" \nCount total NaN at each column in a DataFrame prior the FILL NAN : \n\n",
+          ds.isnull().sum())
     # Create a dictionary ID-Title and fill NaN in the Title column
     title_filled = fillnan(ds, "ID", "Title", "Track")
     # Create a dictionary ID-Artist and fill NaN in the Artist column

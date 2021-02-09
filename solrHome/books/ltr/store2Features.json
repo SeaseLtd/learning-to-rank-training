@@ -1,0 +1,48 @@
+[{
+		"store": "store2",
+		"name": "titleLengthApproximated",
+		"class": "org.apache.solr.ltr.feature.FieldLengthFeature",
+		"params": {
+			"field": "title"
+		}
+	},
+	{
+		"store": "store2",
+		"name": "downloads",
+		"class": "org.apache.solr.ltr.feature.FieldValueFeature",
+		"params": {
+			"field": "downloads"
+		}
+	},
+	{
+		"store": "store2",
+		"name": "isFavouriteGenreStore2",
+		"class": "org.apache.solr.ltr.feature.SolrFeature",
+		"params": {
+			"fq": ["{!field f=subjects}${favouriteSubject}"]
+		}
+	},
+	{
+		"store": "store2",
+		"name": "userAge",
+		"class": "org.apache.solr.ltr.feature.ValueFeature",
+		"params": {
+			"value": "${age:35}"
+		}
+	},
+	{
+		"store": "store2",
+		"name": "isUserFromTablet",
+		"class": "org.apache.solr.ltr.feature.ValueFeature",
+		"params": {
+			"value": "${fromTablet}",
+			"required": false
+		}
+	},
+	{
+    "store": "store2",
+		"name": "originalScore",
+		"class": "org.apache.solr.ltr.feature.OriginalScoreFeature",
+		"params": {}
+	}
+]
