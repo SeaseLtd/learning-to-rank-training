@@ -7,10 +7,52 @@ def generate_id_from_columns(input_data_frame, query_features, id_column):
         str_id = str_id + '_' + input_data_frame[feature].astype(str)
     input_data_frame[id_column] = pd.factorize(str_id)[0]
 
+def fillnan(dataset, key, value, newvalue):
+    # Check Nan
+    print(" \nCount total NaN at each column in a DataFrame : \n\n",
+          dataset.isnull().sum())
+    data_value = dataset[[key, value]].drop_duplicates().dropna()
+    url_value = data_value[key]
+    track_value = data_value[value]
+    dict_value = dict(zip(url_value, track_value))
+    # Fill NaN using the dictionary
+    data_value_filled = dataset[[key, value]]
+    data_value_filled.set_index([key], drop=False, inplace=True)
+    data_value_filled[key].update(pd.Series(dict_value))
+    data_value_filled = data_value_filled.rename(columns={key: newvalue})
+    print(" \nCount total NaN at each column in a DataFrame : \n\n",
+          data_value_filled.isnull().sum())
+    value_filled = data_value_filled[newvalue]
+    return value_filled
 
 def preprocessing_new_query_ID(output_dir, dataset_path, encoding):
-    # Load the dataset with NaN filled (spotify_NaNfilled.csv)
-    newds = pd.read_csv(dataset_path)
+    # Load the dataset (Spotify)
+    ds = pd.read_csv(dataset_path)
+
+    # Rename Title column
+    ds = ds.rename(columns={"Track Name": "Title"})
+
+    # Remove the first part of the the URL
+    ds['URL'] = ds['URL'].str.replace('https://open.spotify.com/track/', '')
+    # Factorize URL
+    ds['ID'] = pd.factorize(ds['URL'])[0]
+    ds.drop(columns=['URL'], inplace=True)
+    print(" \nCount total NaN at each column in a DataFrame prior the FILL NAN : \n\n",
+          ds.isnull().sum())
+    # Create a dictionary ID-Title and fill NaN in the Title column
+    title_filled = fillnan(ds, "ID", "Title", "Track")
+    # Create a dictionary ID-Artist and fill NaN in the Artist column
+    artist_filled = fillnan(ds, "ID", "Artist", "Artists")
+
+    data = pd.concat([title_filled, artist_filled], axis=1)
+    ds.drop(columns=['Title'], inplace=True)
+    ds.drop(columns=['Artist'], inplace=True)
+    newds = ds.join(data.set_index(ds.index))
+    print(" \nCount total NaN at each column in a DataFrame : \n\n",
+          newds.isnull().sum())
+
+    # Save the new dataset to csv
+    newds.to_csv(output_dir + '/spotify_NaNfilled.csv', index=False)
 
     # Start Features Engineering
     # Split the 'Date' feature in day, month and year and extract day of the week
