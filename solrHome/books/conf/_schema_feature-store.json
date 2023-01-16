@@ -1,7 +1,6 @@
 {
   "initArgs":{},
-  "initializedOn":"2021-02-09T19:58:02.747Z",
-  "updatedSinceInit":"2021-02-09T20:07:56.454Z",
+  "initializedOn":"2021-02-10T08:48:32.111Z",
   "managedList":[
     {
       "name":"titleLength",
@@ -34,6 +33,11 @@
       "name":"originalScore",
       "class":"org.apache.solr.ltr.feature.OriginalScoreFeature",
       "params":{},
+      "store":"store1"},
+    {
+      "name":"matchingUserLanguage",
+      "class":"org.apache.solr.ltr.feature.SolrFeature",
+      "params":{"fq":["{!field f=languages}${userLanguage}"]},
       "store":"store1"},
     {
       "name":"titleLengthApproximated",

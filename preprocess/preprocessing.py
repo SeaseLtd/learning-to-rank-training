@@ -21,6 +21,12 @@ def LOU_encoding(dataset, variable_to_encode, target_variable):
     new_dataset = encoder.transform(dataset)
     return new_dataset
 
+def binary_encoding(dataset, variable_to_encode):
+    # Binary encoding
+    encoder = ce.BinaryEncoder(cols=[variable_to_encode])
+    new_dataset = encoder.fit_transform(dataset)
+    return new_dataset
+
 def hash_encoding(dataset, variable_to_encode):
     # Hash encoding
     encoder = ce.HashingEncoder(cols=[variable_to_encode], n_components=8)
@@ -99,7 +105,7 @@ def preprocessing(output_dir, dataset_path, encoding):
           newds.isnull().sum())
 
     # Save the new dataset to csv
-    newds.to_csv(dataset_path+'/spotify_NaNfilled.csv', index=False)
+    newds.to_csv(output_dir+'/spotify_NaNfilled.csv', index=False)
 
     # Create the query_ID from the Region column
     newds['query_ID'] = pd.factorize(newds['Region'])[0]
@@ -126,6 +132,8 @@ def preprocessing(output_dir, dataset_path, encoding):
     elif encoding == "d2v":
         # Doc2vec for 'Track' feature
         newds2 = doc2vec_encoding(newds, "Track")
+    elif encoding == "binary":
+        newds2 = binary_encoding(newds, "Track")
     else:
         print("no encoding found")
 
