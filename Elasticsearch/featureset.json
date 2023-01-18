@@ -1,0 +1,57 @@
+{
+    "validation": {
+       "params": {
+           "favouriteSubject": "Revenge -- Fiction",
+           "age": 10,
+           "fromMobile": 1.0
+       },
+       "index": "books"
+    },
+    "featureset": {
+        "features": [{
+                "name": "downloads",
+                "template": {
+                    "function_score": {
+                        "field_value_factor": {
+                            "field": "downloads"
+                        },
+                        "query": {
+                            "match_all": {}
+                        }
+                    }
+                }
+            },
+            {
+                "name": "isFavouriteSubject",
+                "params": [
+                    "favouriteSubject"
+                ],
+                "template": {
+                    "constant_score": {
+                       "filter": {
+                            "match": {
+                                "subjects": "{{favouriteSubject}}"
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "name": "userAge",
+                "params": [
+                    "age"
+                ],
+                "template_language": "derived_expression",
+                "template": "age"
+            },
+            {
+                "name": "isUserFromMobile",
+                "params": [
+                    "fromMobile"
+                ],
+                "template_language": "derived_expression",
+                "template": "fromMobile"
+            }
+        ]
+    }
+}

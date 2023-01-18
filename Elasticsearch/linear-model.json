@@ -1,0 +1,9 @@
+{
+    "model": {
+        "name": "linear_model",
+        "model": {
+            "type": "model/linear",
+            "definition": "{\"downloads\" : 0.2, \"isFavouriteSubject\" : 0.5, \"userAge\" : 0.8, \"isUserFromMobile\" : 0.1}"
+        }
+    }
+}
