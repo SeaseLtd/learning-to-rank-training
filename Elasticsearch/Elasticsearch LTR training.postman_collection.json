@@ -1,0 +1,408 @@
+{
+	"info": {
+		"_postman_id": "52f05913-57ec-42b2-9e72-8c37aa0847f2",
+		"name": "Elasticsearch LTR training",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4479485"
+	},
+	"item": [
+		{
+			"name": "Features",
+			"item": [
+				{
+					"name": "Create index",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mappings\": {\n        \"properties\": {\n            \"title\": {\n                \"type\": \"text\"\n            },\n            \"author\": {\n                \"type\": \"text\"\n            },\n            \"downloads\": {\n                \"type\": \"long\"\n            },\n            \"languages\": {\n                \"type\": \"text\"\n            },\n            \"subjects\": {\n                \"type\": \"text\"\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:9200/books/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"books",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create feature store",
+					"request": {
+						"auth": {
+							"type": "basic"
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/_ltr",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_ltr"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create feature set",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"validation\": {\n        \"params\": {\n            \"favouriteSubject\": \"Revenge -- Fiction\",\n            \"age\": 10,\n            \"fromMobile\": 1.0\n        },\n        \"index\": \"books\"\n    },\n    \"featureset\": {\n        \"features\": [\n            {\n                \"name\": \"downloads\",\n                \"template\": {\n                    \"function_score\": {\n                        \"field_value_factor\": {\n                            \"field\": \"downloads\"\n                        },\n                        \"query\": {\n                            \"match_all\": {}\n                        }\n                    }\n                }\n            },\n            {\n                \"name\": \"isFavouriteSubject\",\n                \"params\": [\n                    \"favouriteSubject\"\n                ],\n                \"template\": {\n                    \"bool\": {\n                        \"filter\": {\n                            \"match_phrase\": {\n                                \"subjects\": \"{{favouriteSubject}}\"\n                            }\n                        }\n                    }\n                }\n            },\n            {\n                \"name\": \"userAge\",\n                \"params\": [\n                    \"age\"\n                ],\n                \"template_language\": \"derived_expression\",\n                \"template\": \"age\"\n            },\n            {\n                \"name\": \"isUserFromMobile\",\n                \"params\": [\n                    \"fromMobile\"\n                ],\n                \"template_language\": \"derived_expression\",\n                \"template\": \"fromMobile\"\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9200/_ltr/_featureset/books_feature_set",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_ltr",
+								"_featureset",
+								"books_feature_set"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create feature set corrupted",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"validation\": {\n        \"params\": {\n            \"favouriteSubject\": \"Revenge -- Fiction\",\n            \"age\": 10,\n            \"fromMobile\": 1.0\n        },\n        \"index\": \"books\"\n    },\n    \"featureset\": {\n        \"features\": [\n            {\n                \"name\": \"downloads\",\n                \"template\": {\n                    \"function_score\": {\n                        \"field_value_factor\": {\n                            \"field\": \"downloads\"\n                        },\n                        \"query\": {\n                            \"match_all\": {}\n                        }\n                    }\n                }\n            },\n            {\n                \"name\": \"isFavouriteSubject\",\n                \"params\": [\n                    \"favouriteSubject\"\n                ],\n                \"template\": {\n                    \"constant_score\": {\n                        \"filter\": {\n                            \"notExistentESQuery\": {\n                                \"subjects\": \"{{isFavouriteSubject}}\"\n                            }\n                        }\n                    }\n                }\n            },\n            {\n                \"name\": \"userAge\",\n                \"params\": [\n                    \"age\"\n                ],\n                \"template_language\": \"derived_expression\",\n                \"template\": \"age\"\n            },\n            {\n                \"name\": \"isUserFromMobile\",\n                \"params\": [\n                    \"fromMobile\"\n                ],\n                \"template_language\": \"derived_expression\",\n                \"template\": \"fromMobile\"\n            }\n        ]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9200/_ltr/_featureset/books_feature_set3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_ltr",
+								"_featureset",
+								"books_feature_set3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete feature store",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/_ltr",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_ltr"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a feature set",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/_ltr/_featureset/books_feature_set",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_ltr",
+								"_featureset",
+								"books_feature_set"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all feature sets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/_ltr/_featureset",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_ltr",
+								"_featureset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get prefix feature sets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/_ltr/_featureset?prefix=book",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_ltr",
+								"_featureset"
+							],
+							"query": [
+								{
+									"key": "prefix",
+									"value": "book"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a feature set",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/_ltr/_featureset/books_feature_set",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_ltr",
+								"_featureset",
+								"books_feature_set"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Model",
+			"item": [
+				{
+					"name": "Create model",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"model\": {\n        \"name\": \"linear_model\",\n        \"model\": {\n            \"type\": \"model/linear\",\n            \"definition\": \"{\\\"downloads\\\" : 0.01, \\\"isFavouriteSubject\\\" : 10000, \\\"userAge\\\" : 0.8, \\\"isUserFromMobile\\\" : 0.1}\"\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9200/_ltr/_featureset/books_feature_set/_createmodel",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_ltr",
+								"_featureset",
+								"books_feature_set",
+								"_createmodel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a model",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/_ltr/_model/linear_model",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_ltr",
+								"_model",
+								"linear_model"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a model",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9200/_ltr/_model/linear_model",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_ltr",
+								"_model",
+								"linear_model"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Logging",
+			"item": [
+				{
+					"name": "Log features offline",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"bool\": {\n            \"filter\": [\n                {\n                    \"sltr\": {\n                        \"_name\": \"logged_featureset\",\n                        \"featureset\": \"books_feature_set\",\n                        \"params\": {\n                            \"favouriteSubject\": \"Revenge -- Fiction\",\n                            \"age\": 30,\n                            \"fromMobile\": 1.0\n                        }\n                    }\n                }\n            ]\n        }\n    },\n    \"ext\": {\n        \"ltr_log\": {\n            \"log_specs\": {\n                \"name\": \"log_entry1\",\n                \"named_query\": \"logged_featureset\"\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9200/books/_search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"books",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Log features online",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"match\": {\n            \"title\": \"austen\"\n        }\n    },\n    \"rescore\": {\n        \"query\": {\n            \"rescore_query\": {\n                \"sltr\": {\n                    \"params\": {\n                        \"favouriteSubject\": \"Revenge -- Fiction\",\n                        \"age\": 30,\n                        \"fromMobile\": 1.0\n                    },\n                    \"model\": \"linear_model\"\n                }\n            }\n        }\n    },\n    \"ext\": {\n        \"ltr_log\": {\n            \"log_specs\": {\n                \"name\": \"log_entry1\",\n                \"rescore_index\": 0\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9200/books/_search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"books",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Query",
+			"item": [
+				{
+					"name": "LTR query",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": {\n        \"match\": {\n            \"title\": \"Great\"\n        }\n    },\n    \"rescore\": {\n        \"window_size\": 10,\n        \"query\": {\n            \"rescore_query\": {\n                \"sltr\": {\n                    \"params\": {\n                        \"favouriteSubject\": \"Revenge -- Fiction\",\n                        \"age\": 30,\n                        \"fromMobile\": 1.0\n                    },\n                    \"model\": \"linear_model\"\n                }\n            }\n        }\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9200/books/_search",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"books",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
