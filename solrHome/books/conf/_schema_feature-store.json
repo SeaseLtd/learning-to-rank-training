@@ -1,6 +1,7 @@
 {
   "initArgs":{},
-  "initializedOn":"2021-02-10T08:48:32.111Z",
+  "initializedOn":"2023-09-29T14:27:17.974Z",
+  "updatedSinceInit":"2023-09-29T14:29:25.182Z",
   "managedList":[
     {
       "name":"titleLength",
@@ -35,9 +36,9 @@
       "params":{},
       "store":"store1"},
     {
-      "name":"matchingUserLanguage",
-      "class":"org.apache.solr.ltr.feature.SolrFeature",
-      "params":{"fq":["{!field f=languages}${userLanguage}"]},
+      "name":"unusedFeature",
+      "class":"org.apache.solr.ltr.feature.ValueFeature",
+      "params":{"value":"2222"},
       "store":"store1"},
     {
       "name":"titleLengthApproximated",
@@ -64,7 +65,7 @@
       "class":"org.apache.solr.ltr.feature.ValueFeature",
       "params":{
         "value":"${fromTablet}",
-        "required":true},
+        "required":false},
       "store":"store2"},
     {
       "name":"originalScore",

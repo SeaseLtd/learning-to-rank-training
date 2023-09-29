@@ -6,18 +6,18 @@
        { "name" : "titleLength" },
        { "name" : "originalScore" },
        { "name" : "downloads" },
-			 { "name" : "isFavouriteSubject" },
-			 { "name" : "userAge" },
-			 { "name" : "isUserFromMobile" }
+       { "name" : "isFavouriteSubject" },
+       { "name" : "userAge" },
+       { "name" : "isUserFromMobile" }
    ],
    "params" : {
        "weights" : {
            "titleLength" : 1000.0,
            "originalScore" : 0.5,
            "downloads" : 100.0,
-					 "isFavouriteSubject" : 1.0,
-					 "userAge" : 0.5,
-					 "isUserFromMobile" : 2.0
+           "isFavouriteSubject" : 1.0,
+           "userAge" : 0.5,
+           "isUserFromMobile" : 2.0
        }
    }
 }

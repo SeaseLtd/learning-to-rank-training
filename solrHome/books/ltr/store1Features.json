@@ -40,9 +40,17 @@
 		}
 	},
 	{
-    "store": "store1",
+    	"store": "store1",
 		"name": "originalScore",
 		"class": "org.apache.solr.ltr.feature.OriginalScoreFeature",
 		"params": {}
+	},
+	{
+    	"store": "store1",
+		"name": "unusedFeature",
+		"class": "org.apache.solr.ltr.feature.ValueFeature",
+		"params": {
+			"value": "2222"
+		}
 	}
 ]

@@ -1,23 +1,23 @@
 {
    "class" : "org.apache.solr.ltr.model.LinearModel",
-	 "store": "store1",
+   "store": "store1",
    "name" : "linearModel1",
    "features" : [
        { "name" : "titleLength" },
        { "name" : "originalScore" },
        { "name" : "downloads" },
-			 { "name" : "isFavouriteSubject" },
-			 { "name" : "userAge" },
-			 { "name" : "isUserFromMobile" }
+       { "name" : "isFavouriteSubject" },
+       { "name" : "userAge" },
+       { "name" : "isUserFromMobile" }
    ],
    "params" : {
        "weights" : {
-           "titleLength" : 1.0,
-           "originalScore" : 0.5,
-           "downloads" : 10.0,
-					 "isFavouriteSubject" : 100.0,
-					 "userAge" : 0.5,
-					 "isUserFromMobile" : 2.0
+            "titleLength" : 1.0,
+            "originalScore" : 0.5,
+            "downloads" : 10.0,
+            "isFavouriteSubject" : 100.0,
+            "userAge" : 0.5,
+            "isUserFromMobile" : 2.0
        }
    }
 }

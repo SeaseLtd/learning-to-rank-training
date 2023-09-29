@@ -18,5 +18,5 @@ if __name__ == "__main__":
                    'languages': [language for language in book['bibliography']['languages']],
                    'subjects': [subject for subject in book['bibliography']['subjects']]}
         documents.append(doc)
-    solr.add(documents)
+        solr.add(documents)
     print("finished")

@@ -40,7 +40,7 @@
 		}
 	},
 	{
-    "store": "store2",
+    	"store": "store2",
 		"name": "originalScore",
 		"class": "org.apache.solr.ltr.feature.OriginalScoreFeature",
 		"params": {}

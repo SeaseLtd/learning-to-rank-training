@@ -1,22 +1,8 @@
 {
   "initArgs":{},
-  "initializedOn":"2021-02-10T08:48:32.119Z",
-  "updatedSinceInit":"2021-02-10T15:33:47.871Z",
+  "initializedOn":"2023-09-29T14:29:37.650Z",
+  "updatedSinceInit":"2023-09-29T14:30:04.827Z",
   "managedList":[
-    {
-      "name":"linearModel4",
-      "class":"org.apache.solr.ltr.model.LinearModel",
-      "store":"store1",
-      "features":[
-        {
-          "name":"titleLength",
-          "norm":{"class":"org.apache.solr.ltr.norm.IdentityNormalizer"}},
-        {
-          "name":"matchingUserLanguage",
-          "norm":{"class":"org.apache.solr.ltr.norm.IdentityNormalizer"}}],
-      "params":{"weights":{
-          "titleLength":0.1,
-          "matchingUserLanguage":0.1}}},
     {
       "name":"linearModel2",
       "class":"org.apache.solr.ltr.model.LinearModel",
@@ -47,24 +33,6 @@
           "isFavouriteSubject":1.0,
           "userAge":0.5,
           "isUserFromMobile":2.0}}},
-    {
-      "name":"linearModel3",
-      "class":"org.apache.solr.ltr.model.LinearModel",
-      "store":"store1",
-      "features":[
-        {
-          "name":"titleLength",
-          "norm":{"class":"org.apache.solr.ltr.norm.IdentityNormalizer"}},
-        {
-          "name":"matchingUserLanguage",
-          "norm":{"class":"org.apache.solr.ltr.norm.IdentityNormalizer"}},
-        {
-          "name":"downloads",
-          "norm":{"class":"org.apache.solr.ltr.norm.IdentityNormalizer"}}],
-      "params":{"weights":{
-          "titleLength":100.0,
-          "downloads":0.1,
-          "matchingUserLanguage":100.0}}},
     {
       "name":"linearModel1",
       "class":"org.apache.solr.ltr.model.LinearModel",
