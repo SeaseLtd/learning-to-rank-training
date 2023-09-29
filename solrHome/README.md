@@ -6,7 +6,7 @@ Solr Index for the [Gutemberg Project](https://www.gutenberg.org).
 2. Run Solr pointing at the Solr Home directory for the Learning To Rank Course
 
 ```
-./bin/solr start -f -s /path/to/ltrCourse/
+./bin/solr start -f -s /path/to/ltrCourse/solrHome
 ```
 
 In your browser, navigate to "http://localhost:8983/solr/" to confirm Solr is up and running
