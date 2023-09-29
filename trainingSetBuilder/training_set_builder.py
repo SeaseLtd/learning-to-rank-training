@@ -3,6 +3,7 @@ import os
 import time
 import logging
 
+
 def write_training_test_set(data_frame, output_dir, test_set_size=10000, query_id_sample_threshold=25):
     #logging.info('- Splitting training/test set\n')
     #initial_time = time.time()
@@ -13,7 +14,7 @@ def write_training_test_set(data_frame, output_dir, test_set_size=10000, query_i
     #logging.info('Num rows count')
     query_ids_sample_counts = pd.DataFrame(data_frame['query_ID'].value_counts())
     query_ids_sample_counts.index.rename('query_ID', inplace=True)
-    query_ids_sample_counts.rename(columns={'query_ID': "queryIdCount"}, inplace=True)
+    query_ids_sample_counts.rename(columns={'count': "queryIdCount"}, inplace=True)
     interactions_data_frame = pd.merge(data_frame, query_ids_sample_counts,
                                        on='query_ID', how='outer', validate="many_to_one")
     #count_finish_time = time.time()
@@ -57,6 +58,7 @@ def write_training_test_set(data_frame, output_dir, test_set_size=10000, query_i
     #logging.info(
        # '- - - - Training/Test Set split Successfully produced in {:f} seconds\n\n'.format(time.time() - initial_time))
 
+
 def write_set(data_frame, output_dir, set_name):
     # Binary save
     store = pd.HDFStore(output_dir + '/' + set_name + '.h5')
@@ -65,12 +67,13 @@ def write_set(data_frame, output_dir, set_name):
     # interactions_data_frame.to_hdf(output_dir + '/' + set_name + '.h5', key='interactions_data_frame', format='t')
     # set_name = interactions_data_frame
 
+
 def clean_data_frame_from_single_label(data_frame):
     # Add count of num different relevance label per query id
     relevance_counts = data_frame.groupby("query_ID")["Ranking"].value_counts()
     different_relevance_counts_per_query_id = pd.DataFrame(relevance_counts.index.get_level_values(0).value_counts())
     different_relevance_counts_per_query_id.index.rename('query_ID', inplace=True)
-    different_relevance_counts_per_query_id.rename(columns={"query_ID": "relevance_count"}, inplace=True)
+    different_relevance_counts_per_query_id.rename(columns={"count": "relevance_count"}, inplace=True)
     interactions_data_frame = pd.merge(data_frame, different_relevance_counts_per_query_id,
                                        on='query_ID', how='outer', validate="many_to_one")
 
@@ -111,7 +114,7 @@ def training_test_set_split(interactions_data_frame, query_id_sample_threshold, 
         i = 0
         while len(interactions_test) < test_set_size and i < len(to_steal_from_group_ordered):
             to_move = to_steal_from[to_steal_from.query_ID == to_steal_from_group_ordered.index.values[i]]
-            interactions_test = interactions_test.append(to_move, sort=False)
+            interactions_test = pd.concat([interactions_test, to_move], ignore_index=True, sort=False)
             under_sampled_only_train = pd.concat([under_sampled_only_train, to_move], sort=False)
             under_sampled_only_train = under_sampled_only_train.reset_index().drop_duplicates(
                 under_sampled_only_train.columns, keep=False).set_index('index')
@@ -125,12 +128,12 @@ def training_test_set_split(interactions_data_frame, query_id_sample_threshold, 
 
 
 def mapping_relevance_label(mapping):
-    if (mapping == "10"):
+    if mapping == "10":
         # Group the position values to relevance labels from 0 to 10
         d = {range(0, 2): 10, range(2, 3): 9, range(3, 4): 8, range(4, 6): 7,
              range(6, 11): 6, range(11, 21): 5, range(21, 36): 4, range(36, 56): 3,
              range(56, 81): 2, range(81, 131): 1, range(131, 201): 0}
-    elif (mapping == "20"):
+    elif mapping == "20":
         # Group the position values to relevance labels from 0 to 20
         d = {range(1, 2): 20, range(2, 3): 19, range(3, 4): 18, range(4, 5): 17, range(5, 6): 16, range(6, 7): 15,
              range(7, 8): 14, range(8, 9): 13, range(9, 10): 12,
@@ -139,7 +142,10 @@ def mapping_relevance_label(mapping):
              range(46, 61): 5, range(61, 76): 4, range(76, 96): 3,
              range(96, 116): 2, range(116, 151): 1, range(151, 201): 0}
     else:
-        print("mapping not found")
+        # Group the position values to relevance labels from 0 to 10
+        d = {range(0, 2): 10, range(2, 3): 9, range(3, 4): 8, range(4, 6): 7,
+             range(6, 11): 6, range(11, 21): 5, range(21, 36): 4, range(36, 56): 3,
+             range(56, 81): 2, range(81, 131): 1, range(131, 201): 0}
 
     return d
 
@@ -159,4 +165,3 @@ def training_set_builder(output_dir, dataset_name, mapping):
 
     # create the training set to train the model
     write_training_test_set(newds, output_dir, test_set_size=688239)
-

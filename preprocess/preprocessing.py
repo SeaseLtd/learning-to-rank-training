@@ -4,10 +4,12 @@ import re
 import category_encoders as ce
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 
-def cleanData(text):
+
+def clean_data(text):
     text = re.sub('[' + string.punctuation + ']', '', str(text).lower())
     text = re.sub(r'\n', r' ', text)
     return text
+
 
 def write_set(dataset, output_dir, set_name):
     # Binary save
@@ -15,11 +17,13 @@ def write_set(dataset, output_dir, set_name):
     store[set_name] = dataset
     store.close()
 
-def LOU_encoding(dataset, variable_to_encode, target_variable):
+
+def lou_encoding(dataset, variable_to_encode, target_variable):
     # Leave One Out encoding
     encoder = ce.LeaveOneOutEncoder(cols=[variable_to_encode]).fit(dataset, dataset[target_variable])
     new_dataset = encoder.transform(dataset)
     return new_dataset
+
 
 def binary_encoding(dataset, variable_to_encode):
     # Binary encoding
@@ -27,11 +31,13 @@ def binary_encoding(dataset, variable_to_encode):
     new_dataset = encoder.fit_transform(dataset)
     return new_dataset
 
+
 def hash_encoding(dataset, variable_to_encode):
     # Hash encoding
     encoder = ce.HashingEncoder(cols=[variable_to_encode], n_components=8)
     new_dataset = encoder.fit_transform(dataset)
     return new_dataset
+
 
 def one_hot(dataset, variable_to_encode):
     # One Hot encoding
@@ -39,9 +45,10 @@ def one_hot(dataset, variable_to_encode):
     new_dataset = encoder.fit_transform(dataset)
     return new_dataset
 
+
 def doc2vec_encoding(dataset, variable_to_encode):
     # Doc2Vec encoding
-    dataset[variable_to_encode] = dataset[variable_to_encode].map(lambda x: cleanData(x))
+    dataset[variable_to_encode] = dataset[variable_to_encode].map(lambda x: clean_data(x))
     lines = dataset[variable_to_encode]
     token = []
     for line in lines:
@@ -52,7 +59,6 @@ def doc2vec_encoding(dataset, variable_to_encode):
     print(model.wv.vocab)
     vec = model.docvecs.doctag_syn0
     model.save('d2v_model')
-    model = Doc2Vec.load('d2v_model')
 
     lines_vector = pd.DataFrame(vec)
     dataset2 = pd.concat([dataset, lines_vector.set_index(dataset.index)], axis=1)
@@ -60,7 +66,7 @@ def doc2vec_encoding(dataset, variable_to_encode):
     return dataset2
 
 
-def fillnan(dataset, key, value, newvalue):
+def fill_nan(dataset, key, value, newvalue):
     # Check Nan
     print(" \nCount total NaN at each column in a DataFrame : \n\n",
           dataset.isnull().sum())
@@ -78,6 +84,7 @@ def fillnan(dataset, key, value, newvalue):
     value_filled = data_value_filled[newvalue]
     return value_filled
 
+
 def preprocessing(output_dir, dataset_path, encoding):
     # Load the dataset (Spotify)
     ds = pd.read_csv(dataset_path)
@@ -93,9 +100,9 @@ def preprocessing(output_dir, dataset_path, encoding):
     print(" \nCount total NaN at each column in a DataFrame prior the FILL NAN : \n\n",
           ds.isnull().sum())
     # Create a dictionary ID-Title and fill NaN in the Title column
-    title_filled = fillnan(ds, "ID", "Title", "Track")
+    title_filled = fill_nan(ds, "ID", "Title", "Track")
     # Create a dictionary ID-Artist and fill NaN in the Artist column
-    artist_filled = fillnan(ds, "ID", "Artist", "Artists")
+    artist_filled = fill_nan(ds, "ID", "Artist", "Artists")
 
     data = pd.concat([title_filled, artist_filled], axis=1)
     ds.drop(columns=['Title'], inplace=True)
@@ -124,7 +131,7 @@ def preprocessing(output_dir, dataset_path, encoding):
 
     # Leave one out encoding for 'Artists' feature
     # Fit and Transform Data
-    newds = LOU_encoding(newds, "Artists", "Position")
+    newds = lou_encoding(newds, "Artists", "Position")
 
     if encoding == "hash":
         # Hash encoding for 'Track' feature
@@ -132,15 +139,11 @@ def preprocessing(output_dir, dataset_path, encoding):
     elif encoding == "d2v":
         # Doc2vec for 'Track' feature
         newds2 = doc2vec_encoding(newds, "Track")
+    elif encoding == "onehot":
+        newds2 = one_hot(newds, "Track")
     elif encoding == "binary":
         newds2 = binary_encoding(newds, "Track")
     else:
-        print("no encoding found")
+        newds2 = binary_encoding(newds, "Track")
 
     write_set(newds2, output_dir, 'newds_'+encoding)
-
-
-
-
-
-
