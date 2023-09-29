@@ -3,10 +3,10 @@ Solr Index for the [Gutemberg Project](https://www.gutenberg.org).
 # Start up Solr
 
 1. Download and unpack [Solr 8.1.1](https://www.apache.org/dyn/closer.lua/lucene/solr/8.1.1/solr-8.1.1.zip)
-2. Run Solr pointing at the Solr Home directory for the Relevance Course
+2. Run Solr pointing at the Solr Home directory for the Learning To Rank Course
 
 ```
-./bin/solr start -f -s /path/to/relevanceCourse/
+./bin/solr start -f -s /path/to/ltrCourse/
 ```
 
 In your browser, navigate to "http://localhost:8983/solr/" to confirm Solr is up and running
