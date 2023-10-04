@@ -1,7 +1,7 @@
 {
   "initArgs":{},
-  "initializedOn":"2023-09-29T14:45:12.700Z",
-  "updatedSinceInit":"2023-09-29T14:56:33.016Z",
+  "initializedOn":"2023-10-02T12:49:55.003Z",
+  "updatedSinceInit":"2023-10-02T13:44:46.392Z",
   "managedList":[
     {
       "name":"titleLength",
@@ -103,14 +103,4 @@
       "name":"originalScore",
       "class":"org.apache.solr.ltr.feature.OriginalScoreFeature",
       "params":{},
-      "store":"store3"},
-    {
-      "name":"titleLength",
-      "class":"org.apache.solr.ltr.feature.FieldLengthFeature",
-      "params":{"field":"title"},
-      "store":"storeNormalize"},
-    {
-      "name":"downloads",
-      "class":"org.apache.solr.ltr.feature.FieldValueFeature",
-      "params":{"field":"downloads"},
-      "store":"storeNormalize"}]}
+      "store":"store3"}]}

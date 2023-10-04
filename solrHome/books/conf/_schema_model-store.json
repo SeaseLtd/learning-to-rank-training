@@ -1,7 +1,7 @@
 {
   "initArgs":{},
-  "initializedOn":"2023-09-29T14:29:37.650Z",
-  "updatedSinceInit":"2023-09-29T14:30:04.827Z",
+  "initializedOn":"2023-10-02T12:49:55.006Z",
+  "updatedSinceInit":"2023-10-02T13:41:42.377Z",
   "managedList":[
     {
       "name":"linearModel2",
@@ -40,7 +40,11 @@
       "features":[
         {
           "name":"titleLength",
-          "norm":{"class":"org.apache.solr.ltr.norm.IdentityNormalizer"}},
+          "norm":{
+            "class":"org.apache.solr.ltr.norm.MinMaxNormalizer",
+            "params":{
+              "min":"0.0",
+              "max":"5.0"}}},
         {
           "name":"originalScore",
           "norm":{"class":"org.apache.solr.ltr.norm.IdentityNormalizer"}},

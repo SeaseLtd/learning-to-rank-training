@@ -3,7 +3,13 @@
    "store": "store1",
    "name" : "linearModel1",
    "features" : [
-       { "name" : "titleLength" },
+       {
+           "name" : "titleLength",
+           "norm" : {
+               "class" : "org.apache.solr.ltr.norm.MinMaxNormalizer",
+               "params" : { "min":"0", "max":"5" }
+            }
+        },
        { "name" : "originalScore" },
        { "name" : "downloads" },
        { "name" : "isFavouriteSubject" },
